@@ -9,6 +9,5 @@ from scipy.signal import find_peaks #NEW
 import os
 import math
 from os.path import exists
-import seaborn as sns
 from scipy.ndimage import uniform_filter
 from scipy.ndimage import median_filter
