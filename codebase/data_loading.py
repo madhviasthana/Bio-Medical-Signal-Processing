@@ -42,7 +42,6 @@ def LoadDataSignals(file_path,time_axis_start=0,time_axis_end=2000):
 
 
     title=Concentration +" " +"("+actual_waveform +")"
-    print(f"\033[1mDetailed Analysis of File: {title}]")
 
     #Loading mat file data
     mat_data = loadmat(file_path)        

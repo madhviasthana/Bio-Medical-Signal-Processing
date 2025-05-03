@@ -49,7 +49,7 @@ def find_reference_points_transmit_start(raw, threshold=500000):
         transmit_max=transmit_max[0][0]
         reference_points.append(transmit_max)
 
-    return reference_points"""
+    return reference_points
 
 #----------------------------
 
@@ -64,7 +64,9 @@ def find_reference_points_transmit_start(raw,threshold=500000):
         else : 
             reference_points.append(0)
 
-    return reference_points
+    return reference_points 
+
+    """
 
 #----------------------------
 
@@ -85,7 +87,7 @@ def get_align_signals(raw,reference_points):
 def synchronized_averaging(raw,threshold=500000):
    #reference_points= find_reference_points_transmit_start(raw,threshold)
    filtered_raw, reference_points=find_reference_points_transmit_start(raw, threshold)
-   print("filtered_raw: ",filtered_raw.shape)
+   print("Raw After Null Experiments Removal: ",filtered_raw.shape)
    alligned_signal_list=get_align_signals(filtered_raw,reference_points)
    #averaging the signal
    averaged_signal=np.mean(alligned_signal_list,axis=0,keepdims=True)
