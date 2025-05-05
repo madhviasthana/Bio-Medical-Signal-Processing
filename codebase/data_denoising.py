@@ -17,7 +17,7 @@ def dc_offset_removal(raw):
     # Apply DC offset correction only to channel 2
     dc_corrected[:, 1, :] -= np.mean(dc_corrected[:, 1, :], axis=1, keepdims=True)
     
-    print(dc_corrected.shape)
+    print("DC Offset Remval",dc_corrected.shape)
     return dc_corrected
 
 
