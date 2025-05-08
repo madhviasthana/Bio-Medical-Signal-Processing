@@ -1,7 +1,7 @@
 from libaries import *
 from global_parameters import *
 from peak_to_peak_detection import *
-from time_synchronization import *
+from Data_Denoising.time_synchronization import *
 
 def time_synchronized_averaging(raw,threshold):
     #dc offset removal
