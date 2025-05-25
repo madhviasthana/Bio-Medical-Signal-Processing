@@ -8,7 +8,7 @@ def time_synchronized_averaging(raw,threshold):
     dc_corrected_raw=dc_offset_removal(raw)
     #time averaging
     average_signal=synchronized_averaging(dc_corrected_raw,threshold)
-    return average_signal
+    return average_signal[0]
 
 def dc_offset_removal(raw):
     # Convert to float32 to ensure proper subtraction

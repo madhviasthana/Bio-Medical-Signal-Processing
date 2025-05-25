@@ -29,7 +29,7 @@ def findFiles(expected_waveform,expected_periods,sample_number=1):
     return unique_file_list       
 
 
-def LoadDataSignals(file_path,time_axis_start=0,time_axis_end=2000):    
+def LoadDataSignals(file_path,time_axis_start=0,time_axis_end=16000):    
 
     fs=125000000 # Sampling frequency in HZ
 
@@ -45,7 +45,7 @@ def LoadDataSignals(file_path,time_axis_start=0,time_axis_end=2000):
 
     #Loading mat file data
     mat_data = loadmat(file_path)        
-    raw = np.squeeze(mat_data['raw_data']) #remove single dimension
+    raw = np.squeeze(mat_data['raw_data']) #remove single dimension [100,2,16000]
 
     # Raw transmit and receive signals
     #raw_transmit_signal=raw[0,0,time_axis_start:time_axis_end]

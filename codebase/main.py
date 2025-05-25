@@ -1,5 +1,5 @@
 from libaries import *
-from data_denoising import *
+from codebase.Data_Denoising.data_denoising import *
 from data_loading import *
 from global_parameters import *
 
