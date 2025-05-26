@@ -2,36 +2,24 @@ from libaries import *
 from global_parameters import *
 from peak_to_peak_detection import *
 
+def apply_uniform_moving_average_filter(data, window_size=5):
 
-# Uniform Moving Average
-def apply_uniform_moving_average_filter(data, trial_idx=0, window_size=5):
-    """
-    Computes y(n) as the average of window_size samples centered around x(n).
-
-    Args:
-        data (np.ndarray): Input data of shape [100, 2, 16000].
-        trial_idx (int): Index of the trial to process (default: 0).
-        window_size (int): Number of samples in the moving average window (default: 5, must be odd).
-
-    Returns:
-        np.ndarray: Filtered data for channel 2 of the specified trial, shape [1, 16000].
-    """
-    # Validate inputs
-    if trial_idx < 0 or trial_idx >= data.shape[0]:
-        raise ValueError(f"Trial index {trial_idx} out of bounds for data with {data.shape[0]} trials.")
+    if data.ndim != 2:
+        raise ValueError("Input data must be of shape (n_trials, n_samples)")
+    
     if window_size < 1:
         raise ValueError("Window size must be positive.")
     if window_size % 2 == 0:
-        window_size += 1  # Ensure it's odd
+        window_size += 1  # Ensure odd window size
 
-    # Extract channel 2 signal
-    signal = data[trial_idx, 1, :]
-
-    # Create uniform kernel and apply convolution
     kernel = np.ones(window_size) / window_size
-    filtered_signal = convolve(signal, kernel, mode='same')
+    filtered_all = []
 
-    return filtered_signal.reshape(1, -1)
+    for i in range(data.shape[0]):
+        filtered = convolve(data[i], kernel, mode='same')
+        filtered_all.append(filtered)
+
+    return np.stack(filtered_all, axis=0)  # shape: (n_trials, n_samples)
 
 
 #--------------------------------------------------------
@@ -39,34 +27,37 @@ def apply_uniform_moving_average_filter(data, trial_idx=0, window_size=5):
 # hanning filter (hann filter or integer filter or triangular filter)
 
 
-def apply_hanning_filter(data, trial_idx=0, use_initial_conditions=False):
+
+def batch_apply_hanning_filter(data, use_initial_conditions=False):
     """
-    Applies Hanning filter: y(n) = 0.25*x(n) + 0.5*x(n-1) + 0.25*x(n-2)
+    Applies a Hanning filter to all trials in a 2D signal array.
+
+    Hanning filter: y(n) = 0.25*x(n) + 0.5*x(n-1) + 0.25*x(n-2)
 
     Args:
-        data (np.ndarray): Input data of shape [100, 2, 16000].
-        trial_idx (int): Index of the trial to process (default: 0).
-        use_initial_conditions (bool): If True, use initial conditions to reduce edge transients (default: False).
+        data (np.ndarray): Input signal of shape (n_trials, n_samples)
+        use_initial_conditions (bool): Use initial conditions to reduce edge artifacts
 
     Returns:
-        np.ndarray: Filtered signal for channel 2 of specified trial, shape [1, 16000].
+        np.ndarray: Filtered data of shape (n_trials, n_samples)
     """
-    # Validate inputs
-    if trial_idx < 0 or trial_idx >= data.shape[0]:
-        raise ValueError(f"Trial index {trial_idx} out of bounds for data with {data.shape[0]} trials.")
+    if data.ndim != 2:
+        raise ValueError("Expected input shape (n_trials, n_samples)")
 
-    # Extract signal
-    signal = data[trial_idx, 1, :]
+    b = [0.25, 0.5, 0.25]
+    a = [1]
 
-    # Hanning filter coefficients (FIR)
-    b = [0.25, 0.5, 0.25]  # Numerator (filter weights)
-    a = [1]                # Denominator (no feedback)
+    filtered_all = []
 
-    # Apply FIR filter
-    if use_initial_conditions:
-        zi = lfilter_zi(b, a) * signal[0]  # Initial conditions based on first sample
-        filtered_signal, _ = lfilter(b, a, signal, zi=zi)
-    else:
-        filtered_signal = lfilter(b, a, signal)
+    for i in range(data.shape[0]):
+        signal = data[i]
 
-    return filtered_signal.reshape(1, -1)
+        if use_initial_conditions:
+            zi = lfilter_zi(b, a) * signal[0]
+            filtered_signal, _ = lfilter(b, a, signal, zi=zi)
+        else:
+            filtered_signal = lfilter(b, a, signal)
+
+        filtered_all.append(filtered_signal)
+
+    return np.stack(filtered_all, axis=0)  # shape: (n_trials, n_samples)
