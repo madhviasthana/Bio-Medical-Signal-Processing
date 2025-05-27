@@ -2,6 +2,18 @@ from libaries import *
 from global_parameters import *
 from peak_to_peak_detection import *
 
+
+def moving_average_integrator(signal, window_size=30):
+    # Zero-padding before the signal (to replicate MATLAB logic)
+    padded = np.concatenate((np.zeros(window_size - 1), signal))
+
+    # Moving average
+    integrated = np.convolve(padded, np.ones(window_size)/window_size, mode='valid')
+
+    # Normalize
+    normalized_integrated = integrated / np.max(np.abs(integrated))
+    return normalized_integrated
+
 def apply_uniform_moving_average_filter(data, window_size=5):
 
     if data.ndim != 2:
