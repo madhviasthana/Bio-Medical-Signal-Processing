@@ -5,7 +5,7 @@ def signal_plot(signal, start=0, end=16000, Fs=125e6, title="Signal",x_buffer=10
     # Plots a signal in time domain, adapting to input shape (single or batch).
 
     Ts_ns = 1e9 / Fs  # Sampling period in nanoseconds
-    time = np.arange(start, end) * Ts_ns
+    time = np.arange(start, end) #* Ts_ns
 
     plt.figure(figsize=(10, 4))
 

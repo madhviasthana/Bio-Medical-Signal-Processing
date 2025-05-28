@@ -96,9 +96,9 @@ def minmax_echolist(signal,min_max_dif,buffer_size, start_threshold, end_thresho
             echo_start = start_i 
             continue
 
-        if echo_start:
+        if echo_start is not None:
             if diff <  dynamic_end_threshold:
-                if temp_end :
+                if temp_end is not None:
                     consecutive_count = abs(temp_end-end_i)
                 else:
                     temp_end = end_i
@@ -110,6 +110,8 @@ def minmax_echolist(signal,min_max_dif,buffer_size, start_threshold, end_thresho
                 echo_list.append((echo_start, temp_end))
                 echo_start = None
                 consecutive_count = 0
+    if echo_start is not None and temp_end is None:
+        echo_list.append((echo_start, min_max_dif[-1][0][1]))
                 
     return echo_list
 
