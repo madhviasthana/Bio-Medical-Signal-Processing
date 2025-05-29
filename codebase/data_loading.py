@@ -15,6 +15,7 @@ def findFiles(expected_waveform,expected_periods,sample_number=1):
     """
     unique_file_list=[]
     for i in os.listdir(root_folder):
+        print(i)
         if os.path.isdir(root_folder+'//'+i):
 
             for j in os.listdir(root_folder+'//'+i):

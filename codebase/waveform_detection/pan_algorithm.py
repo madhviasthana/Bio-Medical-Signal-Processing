@@ -34,7 +34,7 @@ def find_min_max_echo_list(signal, buffer_size , min_prominence , start_threshol
 
     echo_list=minmax_echolist(signal,pair_diff,buffer_size, start_threshold, end_threshold)
 
-    return echo_list
+    return echo_list,min_max_pairs
 
 def apply_pan_algorithm(transmit,recieve,periods,T,low_cutoff, high_cutoff, order=4, window_size=11,min_prominence=500,threshold_transmit=600000,threshold_recieve=1500000,comp_index=3,buffer_size=100):
     transmit_part = []
@@ -68,15 +68,15 @@ def apply_pan_algorithm(transmit,recieve,periods,T,low_cutoff, high_cutoff, orde
     
     signal_plot(integrated_output,start=6271-100,end=6342+100,title="Recieve Channel")
 
-    transmit_echo_list = find_min_max_echo_list(signal=normalized_transmit ,buffer_size=100 ,min_prominence= 0.05, start_threshold=0.5 , end_threshold=0.2)
+    transmit_echo_list,transmit_min_max_pairs = find_min_max_echo_list(signal=normalized_transmit ,buffer_size=100 ,min_prominence= 0.05, start_threshold=0.5 , end_threshold=0.2)
 
-    recieve_echo_list = find_min_max_echo_list(signal=integrated_output[4000:] ,buffer_size= 100 ,min_prominence= 0.05, start_threshold= 0.01 , end_threshold= 0.005)
+    recieve_echo_list,recieve_min_max_pairs = find_min_max_echo_list(signal=integrated_output[4000:] ,buffer_size= 100 ,min_prominence= 0.05, start_threshold= 0.01 , end_threshold= 0.005)
     recieve_echo_list = [(i+4000, j+4000) for (i,j) in recieve_echo_list]
     print("Transmit" , transmit_echo_list)
     print("Recieve" , recieve_echo_list)
     
 
-    return transmit_echo_list,recieve_echo_list
+    return transmit_echo_list,recieve_echo_list,transmit_min_max_pairs,recieve_min_max_pairs
 
 
 
