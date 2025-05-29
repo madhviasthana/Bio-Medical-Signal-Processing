@@ -62,11 +62,11 @@ def apply_pan_algorithm(transmit,recieve,periods,T,low_cutoff, high_cutoff, orde
     
     normalized_transmit = normalize_min_max(transmit)
 
-    signal_plot(normalized_transmit,start=0,end=240,title="Transmit Channel")
+    """signal_plot(normalized_transmit,start=0,end=240,title="Transmit Channel")
     signal_plot(integrated_output,start=0,end=8000,title="Recieve Channel")
     signal_plot(integrated_output,start=6000,end=12000,title="Recieve Channel")
     
-    signal_plot(integrated_output,start=6271-100,end=6342+100,title="Recieve Channel")
+    signal_plot(integrated_output,start=6271-100,end=6342+100,title="Recieve Channel")"""
 
     transmit_echo_list,transmit_min_max_pairs = find_min_max_echo_list(signal=normalized_transmit ,buffer_size=100 ,min_prominence= 0.05, start_threshold=0.5 , end_threshold=0.2)
 

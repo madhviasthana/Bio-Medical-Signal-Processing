@@ -36,7 +36,7 @@ def convert_mg_to_percent(velocities, water_quantity_ml):
         converted_velocities.append([percent_value, velocity])
     return converted_velocities
 
-def process_signals(unique_file_list, comp_index=3):
+def process_signals(unique_file_list, tof_method_index=1, comp_index=3):
     velocities = []
     concentrations = []
     tofs = []
@@ -49,6 +49,10 @@ def process_signals(unique_file_list, comp_index=3):
     first_echo_end = []
     refractometer_readings = [0,1,2,3,4,5,6,7,8,9,10,11]
     selected_index_list = []
+
+    tof_methods = ['peak_to_peak', 'zero_crossing', 'cross_correlation']
+    selected_method = tof_methods[tof_method_index]
+
 
     start=0
     end=16000
@@ -80,10 +84,31 @@ def process_signals(unique_file_list, comp_index=3):
         recieve_max_pair = recieve_echo_list[0]
         r_start_index = recieve_max_pair[0]
 
-        transmit_zero_pair = find_next_zero_crossings(transmit[0,:], [t_start_index])
-        receive_zero_pair = find_next_zero_crossings(receive[0,:], [r_start_index])
 
-        tof = findTOF(transmit_zero_pair, receive_zero_pair) 
+
+        if selected_method == 'zero_crossing':
+
+            """ #using time synchronized signal
+            transmit_averaged_signal,recieve_averaged_signal=time_synchronized_averaging(raw[:,0,:],receive,threshold=500000)
+            transmit_zero_pair = find_next_zero_crossings(transmit_averaged_signal[0], [t_start_index])
+            receive_zero_pair = find_next_zero_crossings(recieve_averaged_signal[0], [r_start_index])"""
+        
+            """ # using bandpass filter
+            bandpassed_transmit = apply_bandpass_filter(transmit[0, start:end], fs, 12e6, 18e6)
+            bandpassed_receive = apply_bandpass_filter(receive[0, start:end], fs, 12e6, 18e6)
+            transmit_zero_pair = find_next_zero_crossings(bandpassed_transmit, [t_start_index])
+            receive_zero_pair = find_next_zero_crossings(bandpassed_receive, [r_start_index])
+            """
+
+            #transmit_filtered_hanning = batch_apply_hanning_filter(transmit)
+            #recieve_filtered_hanning = batch_apply_hanning_filter(receive)
+
+            # using dc offset removed orignal signals
+
+            transmit_zero_pair = find_next_zero_crossings(transmit[0,:], [t_start_index])
+            receive_zero_pair = find_next_zero_crossings(receive[0,:], [r_start_index])
+            
+            tof = findTOF(transmit_zero_pair, receive_zero_pair) 
 
         tofs.append(tof)
         velocity = find_Velocity(tof, distance = 0.083)
