@@ -17,3 +17,4 @@ import matplotlib.pyplot as plt
 from numpy.fft import fft, fftfreq
 from scipy.signal import butter, sosfilt
 from scipy.signal import filtfilt
+from scipy.signal import correlate
