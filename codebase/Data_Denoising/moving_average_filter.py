@@ -41,36 +41,46 @@ def apply_uniform_moving_average_filter(data, window_size=5):
 
 
 
+
+
 def batch_apply_hanning_filter(data, use_initial_conditions=False):
     """
-    Applies a Hanning filter to all trials in a 2D signal array.
+    Applies a Hanning filter to 1D or 2D signal array.
 
     Hanning filter: y(n) = 0.25*x(n) + 0.5*x(n-1) + 0.25*x(n-2)
 
     Args:
-        data (np.ndarray): Input signal of shape (n_trials, n_samples)
+        data (np.ndarray): Input signal, shape (n_samples,) or (n_trials, n_samples)
         use_initial_conditions (bool): Use initial conditions to reduce edge artifacts
 
     Returns:
-        np.ndarray: Filtered data of shape (n_trials, n_samples)
+        np.ndarray: Filtered signal, same shape as input
     """
-    if data.ndim != 2:
-        raise ValueError("Expected input shape (n_trials, n_samples)")
-
     b = [0.25, 0.5, 0.25]
     a = [1]
 
-    filtered_all = []
-
-    for i in range(data.shape[0]):
-        signal = data[i]
-
+    # Case 1: 1D signal
+    if data.ndim == 1:
         if use_initial_conditions:
-            zi = lfilter_zi(b, a) * signal[0]
-            filtered_signal, _ = lfilter(b, a, signal, zi=zi)
+            zi = lfilter_zi(b, a) * data[0]
+            filtered_signal, _ = lfilter(b, a, data, zi=zi)
         else:
-            filtered_signal = lfilter(b, a, signal)
+            filtered_signal = lfilter(b, a, data)
+        return filtered_signal
 
-        filtered_all.append(filtered_signal)
+    # Case 2: 2D signal
+    elif data.ndim == 2:
+        filtered_all = []
+        for i in range(data.shape[0]):
+            signal = data[i]
+            if use_initial_conditions:
+                zi = lfilter_zi(b, a) * signal[0]
+                filtered_signal, _ = lfilter(b, a, signal, zi=zi)
+            else:
+                filtered_signal = lfilter(b, a, signal)
+            filtered_all.append(filtered_signal)
+        return np.stack(filtered_all, axis=0)
 
-    return np.stack(filtered_all, axis=0)  # shape: (n_trials, n_samples)
+    else:
+        raise ValueError("Expected input shape (n_samples,) or (n_trials, n_samples)")
+

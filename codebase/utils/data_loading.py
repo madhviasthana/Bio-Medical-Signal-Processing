@@ -2,7 +2,7 @@ from utils.libaries import *
 from utils.global_parameters import *
 
 
-def findFiles(expected_waveform,expected_periods,sample_number=1):
+def findFiles(expected_waveform,expected_periods,root_folder,sample_number=1):
     """_summary_
 
     Args:

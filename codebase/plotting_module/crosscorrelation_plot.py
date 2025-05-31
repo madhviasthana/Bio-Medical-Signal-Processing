@@ -60,9 +60,6 @@ def plot_cross_correlation(transmit_signal, receive_signal, correlation, sample_
     return tof_ns, sample_delay, correlation
 
 
-import numpy as np
-import matplotlib.pyplot as plt
-from scipy.signal import correlate
 
 def calculate_windowed_tof_cross_correlation(transmit_signal, receive_signal,
                                               t_start_idx, r_start_idx,
@@ -102,11 +99,11 @@ def calculate_windowed_tof_cross_correlation(transmit_signal, receive_signal,
 
     # Calculate actual ToF in samples and ns
     sample_delay = lag_at_max + (r_start_idx - t_start_idx)
-    tof_ns = sample_delay 
+    tof_sec = sample_delay / fs  # Convert samples to seconds
 
 
 
 
-    return tof_ns, sample_delay, correlation, lags
+    return tof_sec, sample_delay, correlation, lags
 
 

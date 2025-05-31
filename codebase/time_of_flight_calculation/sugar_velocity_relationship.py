@@ -123,12 +123,12 @@ def process_signals(unique_file_list, tof_method_index=1, comp_index=3):
 
         if selected_method == 'cross_correlation':
     
-            transmit_averaged_signal,recieve_averaged_signal=time_synchronized_averaging(raw[:,0,:],receive,threshold=500000)
+            #transmit_averaged_signal,recieve_averaged_signal=time_synchronized_averaging(raw[:,0,:],receive,threshold=500000)
             #bandpassed_transmit = apply_bandpass_filter(transmit_averaged_signal[0], fs, 12e6, 18e6)
             #bandpassed_receive = apply_bandpass_filter(recieve_averaged_signal[0], fs, 12e6, 18e6)
 
-            bandpassed_transmit = apply_bandpass_filter(transmit[0, start:end], fs, 1e6, 6.5e6)
-            bandpassed_receive = apply_bandpass_filter(receive[0, start:end], fs, 1e6, 6.5e6)
+            bandpassed_transmit = apply_bandpass_filter(transmit[0, start:end], fs, 3e6, 7e6)
+            bandpassed_receive = apply_bandpass_filter(receive[0, start:end], fs, 3e6, 7e6)
 
             transmit_filtered_derivative=apply_improved_derivative_filter(transmit, T=T)
             receive_filtered_derivative=apply_improved_derivative_filter(receive, T=T)
@@ -139,8 +139,8 @@ def process_signals(unique_file_list, tof_method_index=1, comp_index=3):
 
             try:
                 tof, delay_samples, corr, lags = calculate_windowed_tof_cross_correlation(
-                    transmit_averaged_signal[0], recieve_averaged_signal[0],
-                    t_start_index, r_start_index,
+                    bandpassed_transmit, bandpassed_receive,
+                    t_start_index, r_start_index-100,
                     fs=125e6, window_size=600
                 )
                 print("TOF calculated:", tof)
