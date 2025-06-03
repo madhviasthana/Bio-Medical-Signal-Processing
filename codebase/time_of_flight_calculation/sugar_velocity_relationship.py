@@ -173,3 +173,4 @@ def process_signals(unique_file_list, tof_method_index=1, comp_index=3):
 
 
     return converted_velocity,time_of_flight,actual_waveform,receive_selected_index_list,transmit_selected_index_list #min(first_echo_start),max(first_echo_end)
+
